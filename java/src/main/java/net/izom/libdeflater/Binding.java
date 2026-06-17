@@ -5,6 +5,6 @@ public class Binding {
         System.load("");
     }
 
-    public static native void compressBytes(byte[] bytes);
+    public static native byte[] compressBytes(byte[] bytes);
 
 }

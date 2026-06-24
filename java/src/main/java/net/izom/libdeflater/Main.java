@@ -11,5 +11,8 @@ public class Main {
         byte[] res = binding.compressBytes(bytes);
 
         System.out.println(String.format("bytes=%s, res=%s", bytes.length, res.length));
+        byte[] res2 = binding.decompressBytes(res);
+        System.out.writeBytes(res2);
+        System.out.println();
     }
 }

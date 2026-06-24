@@ -60,6 +60,8 @@ pub unsafe extern "system" fn Java_net_izom_libdeflater_Binding_decompressBytes(
         (array_funcs.GetByteArrayRegion)(env, bytes, 0, size as i32, buff);
 
         let slice = slice::from_raw_parts(buff as *mut u8, size);
+
+        libc::free(buff as *mut libc::c_void);
         slice
     };
 

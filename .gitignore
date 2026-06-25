@@ -1,4 +1,5 @@
 java/target
 rust/target
 rust/Cargo.lock
+java/src/main/java/net/izom/libdeflater/Binding.java
 .vscode

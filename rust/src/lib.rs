@@ -1,7 +1,4 @@
-use std::{
-    slice,
-    mem,
-};
+use std::{mem, slice};
 
 use jni_sys::{JNIEnv, jbyteArray, jclass};
 use libdeflater::{CompressionLvl, Compressor, DecompressionError, Decompressor};
@@ -64,27 +61,16 @@ pub unsafe extern "system" fn Java_net_izom_libdeflater_Binding_decompressBytes(
     bytes: jbyteArray,
 ) -> jbyteArray {
     let array_funcs = unsafe { (**env).v1_1 };
-    let size = unsafe { (array_funcs.GetArrayLength)(env, bytes) as usize };
-    let slice = unsafe {
-        let buff: *mut i8 = libc::malloc(mem::size_of::<i32>() * size) as *mut i8;
-
-        if buff.is_null() {
-            return (array_funcs.NewByteArray)(env, 0);
-        }
-
-        (array_funcs.GetByteArrayRegion)(env, bytes, 0, size as i32, buff);
-
-        let slice = slice::from_raw_parts(buff as *mut u8, size);
-
-        libc::free(buff as *mut libc::c_void);
-        slice
-    };
+    let vec: Vec<u8> = JByteArr {
+        env: env,
+        arr: bytes,
+    }.into();
 
     let mut decompressor = Decompressor::new();
     let mut buff = vec![];
-    let mut size = slice.len() * 4;
+    let mut size = vec.len() * 4;
     loop {
-        match decompressor.deflate_decompress(slice, &mut buff) {
+        match decompressor.deflate_decompress(vec.as_slice(), &mut buff) {
             Ok(size) => {
                 buff.truncate(size);
                 break;
